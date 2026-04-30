@@ -24,52 +24,77 @@ To write a program to predict the marks scored by a student using the simple lin
 
 ## Program:
 ```
-import numpy as np
+# Importing necessary libraries
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
 
-data = {
-    "Hours_Studied": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    "Marks_Scored":  [35, 40, 50, 55, 60, 65, 70, 80, 85, 95]
-}
+# Load the dataset
+# df = pd.read_csv("student_scores.csv") # Original line that caused the error
+# Creating a sample DataFrame since 'student_scores.csv' was not found
+data = {'Hours': [2.5, 5.1, 3.2, 8.5, 3.5, 1.5, 8.9, 6.0, 2.7, 7.7, 5.9, 4.5, 3.3, 1.1, 6.2, 7.8, 6.9, 2.1, 4.8, 3.8, 9.2, 5.5, 8.3, 2.7, 7.6],
+        'Scores': [21, 47, 27, 75, 30, 20, 88, 62, 25, 85, 60, 41, 42, 17, 60, 81, 70, 20, 54, 35, 95, 49, 87, 27, 78]}
 df = pd.DataFrame(data)
-print("Dataset:\n", df.head())
 
+# Display the first few rows of the dataset
+print("First 5 rows of the dataset:")
+print(df.head())
 
+# Display the last few rows of the dataset
+print("Last 5 rows of the dataset:")
+print(df.tail())
 
-X = df[["Hours_Studied"]]   # Independent variable
-y = df["Marks_Scored"]      # Dependent variable
+# Separate the independent (X) and dependent (Y) variables
+X = df.iloc[:, :-1].values  # Assuming the 'Hours' column is the first column
+Y = df.iloc[:, 1].values    # Assuming the 'Scores' column is the second column
 
+# Split the dataset into training and testing sets (1/3rd for testing)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=1/3, random_state=0)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+# Create and train the Linear Regression model
+regressor = LinearRegression()
+regressor.fit(X_train, Y_train)
 
-model = LinearRegression()
-model.fit(X_train, y_train)
+# Predict the test set results
+Y_pred = regressor.predict(X_test) # Corrected: Predict using X_test, not Y_test
 
-y_pred = model.predict(X_test)
+# Display predicted and actual values for testing set
+print("Predicted values:")
+print(Y_pred)
+print("Actual values:")
+print(Y_test)
 
-print("\nModel Parameters:")
-print("Intercept (b0):", model.intercept_)
-print("Slope (b1):", model.coef_[0])
-
-print("\nEvaluation Metrics:")
-print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
-print("R² Score:", r2_score(y_test, y_pred))
-
-plt.figure(figsize=(8,6))
-plt.scatter(X, y, color='blue', label="Actual Data")
-plt.plot(X, model.predict(X), color='red', linewidth=2, label="Regression Line")
+# Plot the Training set results
+plt.scatter(X_train, Y_train, color="red", label="Actual Scores")
+plt.plot(X_train, regressor.predict(X_train), color="blue", label="Fitted Line")
+plt.title("Hours vs Scores (Training Set)")
 plt.xlabel("Hours Studied")
-plt.ylabel("Marks Scored")
-plt.title("Simple Linear Regression: Predicting Marks")
+plt.ylabel("Scores Achieved")
 plt.legend()
-plt.grid(True)
 plt.show()
+
+# Plot the Testing set results
+plt.scatter(X_test, Y_test, color='green', label="Actual Scores")
+# Plotting the regression line based on the training data's fitted line for visual consistency
+plt.plot(X_train, regressor.predict(X_train), color='red', label="Fitted Line") 
+plt.title("Hours vs Scores (Testing Set)")
+plt.xlabel("Hours Studied")
+plt.ylabel("Scores Achieved")
+plt.legend()
+plt.show()
+
+# Calculate and print error metrics
+mse = mean_squared_error(Y_test, Y_pred)
+mae = mean_absolute_error(Y_test, Y_pred)
+rmse = np.sqrt(mse)
+
+print('Mean Squared Error (MSE) =', mse)
+print('Mean Absolute Error (MAE) =', mae)
+print('Root Mean Squared Error (RMSE) =', rmse)
+
 /*
 Program to implement the simple linear regression model for predicting the marks scored.
 Developed by: DEEPIKA G
@@ -79,7 +104,11 @@ RegisterNumber: 212224040060
 
 ## Output:
 
-<img width="784" height="816" alt="image" src="https://github.com/user-attachments/assets/6136e232-dcc2-4f2b-98d9-1470789d1f33" />
+<img width="788" height="407" alt="image" src="https://github.com/user-attachments/assets/52adc829-c7c8-4107-8a8b-08e92d2ffd08" />
+
+<img width="808" height="508" alt="image" src="https://github.com/user-attachments/assets/86c8847f-d64b-4059-b1ef-268ff9aae7f8" />
+
+<img width="874" height="578" alt="image" src="https://github.com/user-attachments/assets/1f7f5882-57fc-4333-8dde-14c33b3bde6e" />
 
 ## Result:
 Thus the program to implement the simple linear regression model for predicting the marks scored is written and verified using python programming.
